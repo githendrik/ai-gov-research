@@ -1,0 +1,44 @@
+baseURL = "https://ai-gov-research.vercel.app/"
+title = "AI Governance Weekly"
+defaultContentLanguage = "en"
+copyright = "AI Governance Weekly"
+enableRobotsTXT = true
+enableGitInfo = true
+
+# Promote date from filename: 2026-08-04-foo.md -> date=2026-08-04
+[frontmatter]
+date = [":filename", ":default"]
+
+[params]
+  description = "A weekly digest of AI governance, regulation, and safety news."
+  mainSections = ["posts"]
+  [params.author]
+    name = "AI Gov Research"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+    [markup.goldmark.parser]
+      autoHeadingID = true
+      autoHeadingIDType = "github"
+    [markup.goldmark.renderer]
+      unsafe = true
+      hardWraps = false
+
+[outputs]
+  home = ["html", "rss"]
+  section = ["html", "rss"]
+  taxonomy = ["html", "rss"]
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[services]
+  [services.rss]
+    limit = 50

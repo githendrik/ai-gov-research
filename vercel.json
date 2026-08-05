@@ -1,0 +1,7 @@
+{
+  "buildCommand": "python3 scripts/transform_docs.py && hugo --minify --gc",
+  "outputDirectory": "public",
+  "framework": "hugo",
+  "installCommand": "echo 'no install needed'",
+  "github": { "silent": true }
+}

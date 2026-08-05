@@ -1,0 +1,23 @@
+{{ define "main" }}
+<section class="home">
+  <header class="home-header">
+    <h1>{{ .Site.Title }}</h1>
+    <p class="tagline">{{ .Site.Params.description }}</p>
+    <p class="feed-link">Subscribe: <a href="{{ "index.xml" | relURL }}">RSS feed</a></p>
+  </header>
+  <section class="recent-posts">
+    <h2>Recent posts</h2>
+    {{ $posts := where .Site.RegularPages "Section" "posts" }}
+    {{ range first 10 $posts }}
+    <article class="post-summary">
+      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      <div class="post-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time></div>
+      <p class="summary">{{ .Summary }}</p>
+    </article>
+    {{ else }}
+    <p>No posts yet — check back soon.</p>
+    {{ end }}
+  </section>
+  <p><a href="{{ "posts/" | relURL }}">All posts &rarr;</a></p>
+</section>
+{{ end }}

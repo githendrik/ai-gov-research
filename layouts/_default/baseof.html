@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ block "title" . }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} feed" href="{{ .Site.BaseURL }}index.xml">
+  {{ block "head" . }}{{ end }}
+</head>
+<body>
+  <header class="site-header">
+    <a href="{{ .Site.BaseURL }}" class="site-title">{{ .Site.Title }}</a>
+    <nav class="site-nav">
+      <a href="{{ .Site.BaseURL }}">Home</a>
+      <a href="{{ "posts/" | relURL }}">Posts</a>
+      <a href="{{ "index.xml" | relURL }}">RSS</a>
+    </nav>
+  </header>
+  <main class="site-main">
+    {{ block "main" . }}{{ end }}
+  </main>
+  <footer class="site-footer">
+    <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }} · <a href="{{ "index.xml" | relURL }}">RSS feed</a></p>
+  </footer>
+</body>
+</html>

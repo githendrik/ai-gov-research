@@ -1,0 +1,20 @@
+{{ define "main" }}
+<section class="post-list">
+  <header class="list-header">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="list-desc">{{ . }}</p>{{ end }}
+    <p class="feed-link">Subscribe: <a href="{{ (printf "%sindex.xml" .RelPermalink) | safeURL }}">RSS</a></p>
+  </header>
+  {{ range .Pages }}
+  <article class="post-summary">
+    <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    <div class="post-meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+    </div>
+    <p class="summary">{{ .Summary }}</p>
+  </article>
+  {{ else }}
+  <p>No posts yet — check back soon.</p>
+  {{ end }}
+</section>
+{{ end }}
