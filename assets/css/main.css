@@ -118,11 +118,11 @@ sup { font-size: 0.75em; color: var(--muted); line-height: 0; }
   background: var(--paper);
   color: var(--ink);
   border: 4px solid var(--ink);
-  border-left: 12px solid var(--accent);
-  box-shadow: 8px 8px 0 var(--shadow);
+  padding-left: 1.8em;
+  box-shadow: inset 12px 0 0 var(--accent), 8px 8px 0 var(--shadow);
 }
 @media (max-width: 480px) {
-  .tagline { box-shadow: 4px 4px 0 var(--shadow); padding: 0.8em 0.9em; }
+  .tagline { box-shadow: inset 12px 0 0 var(--accent), 4px 4px 0 var(--shadow); padding: 0.8em 0.9em 0.8em 1.6em; }
 }
 .feed-link { color: var(--muted); font-size: 0.9em; }
 .recent-posts h2 { font-size: 1.2em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
