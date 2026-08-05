@@ -17,3 +17,6 @@
 
 # Vercel
 .vercel/
+
+# Playwright
+.playwright-mcp
