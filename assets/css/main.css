@@ -201,6 +201,9 @@ sup { font-size: 0.75em; color: var(--muted); line-height: 0; }
 .post-content h2 { margin-top: 1.8em; font-size: 1.4em; }
 .post-content h3 { margin-top: 1.5em; font-size: 1.15em; }
 .post-content p, .post-content ul { margin: 0.8em 0; }
+.post-content { overflow-wrap: break-word; }
+.post-content a { overflow-wrap: anywhere; word-break: break-word; }
+.post-content pre, .post-content table { overflow-x: auto; max-width: 100%; }
 .post-content ul { padding-left: 1.4em; }
 .post-content code { background: var(--code-bg); padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.9em; }
 .post-content strong { color: var(--fg); }
