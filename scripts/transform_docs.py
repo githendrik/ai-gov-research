@@ -33,7 +33,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC_DIR = REPO_ROOT / "docs"
 OUT_DIR = REPO_ROOT / "content" / "posts"
-IMAGES_DIR = REPO_ROOT / "assets" / "images"
+IMAGES_DIR = REPO_ROOT / "static" / "images"
 
 # --- Patterns ---------------------------------------------------------------
 
