@@ -33,6 +33,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC_DIR = REPO_ROOT / "docs"
 OUT_DIR = REPO_ROOT / "content" / "posts"
+IMAGES_DIR = REPO_ROOT / "assets" / "images"
 
 # --- Patterns ---------------------------------------------------------------
 
@@ -91,21 +92,20 @@ def build_frontmatter(
 ) -> str:
     lines = ["---"]
     if title:
-        # Escape double quotes in the title.
         safe_title = title.replace('"', '\\"')
         lines.append(f'title: "{safe_title}"')
     if date:
         lines.append(f"date: {date.isoformat()}")
     lines.append("draft: false")
-    # Explicit slug prevents collisions: Hugo's default slug strips the leading
-    # YYYY-MM-DD from the filename, so weekly digests with a constant name
-    # (e.g. 2026-08-04-ai-governance.md and 2026-08-11-ai-governance.md) would
-    # both slugify to "ai-governance" and overwrite each other.
     lines.append(f"slug: {stem}")
     tags = ["governance"] + (extra_tags or [])
     if tags:
         lines.append("tags: [{}]".format(", ".join(tags)))
     lines.append(f"source: {stem}.md")
+    # Hero image: check for matching PNG in assets/images/
+    image_path = IMAGES_DIR / f"{stem}.png"
+    if image_path.exists():
+        lines.append(f"image: /images/{stem}.png")
     lines.append("---")
     lines.append("")
     return "\n".join(lines)

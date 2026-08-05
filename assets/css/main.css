@@ -121,6 +121,17 @@ sup { font-size: 0.75em; color: var(--muted); line-height: 0; }
   border-left: 8px solid var(--accent);
   padding-left: 0.4em;
 }
+.post-hero {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--shadow);
+  margin-bottom: 1.5em;
+}
+@media (max-width: 480px) {
+  .post-hero { height: 160px; box-shadow: 4px 4px 0 var(--shadow); }
+}
 .post-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 2em; }
 .post-tags .tag {
   display: inline-block; margin-left: 0.4em; padding: 0.1em 0.5em;
