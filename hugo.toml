@@ -10,6 +10,7 @@ date = [":filename", ":default"]
 
 [params]
   description = "A weekly digest of AI governance, regulation, and safety news."
+  tagline = "Every week, the rules being written for artificial intelligence — what regulators shipped, what lawmakers argued over, and what actually changed. Researched, cited, and stripped of hype."
   mainSections = ["posts"]
   [params.author]
     name = "AI Gov Research"

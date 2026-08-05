@@ -2,8 +2,8 @@
   --bg: #fdfdfd;
   --fg: #1a1a1a;
   --muted: #666;
-  --link: #1e6bb8;
-  --link-hover: #144a7e;
+  --link: #1a1a1a;
+  --link-hover: #ff4500;
   --border: #e3e3e3;
   --code-bg: #f4f4f4;
   --tag-bg: #eef3f8;
@@ -18,8 +18,8 @@
     --bg: #1a1a1a;
     --fg: #e8e8e8;
     --muted: #999;
-    --link: #8ec6ff;
-    --link-hover: #b5d9ff;
+    --link: #e8e8e8;
+    --link-hover: #ff4500;
     --border: #333;
     --code-bg: #262626;
     --tag-bg: #2a3340;
@@ -38,8 +38,13 @@ body {
   background: var(--bg);
   color: var(--fg);
 }
-a { color: var(--link); text-decoration: none; }
-a:hover { color: var(--link-hover); text-decoration: underline; }
+a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 2px solid var(--accent);
+}
+a:hover { color: var(--link-hover); text-decoration: none; }
+.site-title, .site-nav a, .post-hero a { border-bottom: 0; }
 hr { border: none; border-top: 1px solid var(--border); margin: 2em 0; }
 sup { font-size: 0.75em; color: var(--muted); line-height: 0; }
 
@@ -105,12 +110,27 @@ sup { font-size: 0.75em; color: var(--muted); line-height: 0; }
   border-left: 8px solid var(--accent);
   padding-left: 0.4em;
 }
-.tagline { color: var(--muted); margin: 0 0 1em; }
+.tagline {
+  margin: 1.2em 0 2.5em;
+  padding: 1em 1.1em;
+  font-size: 1.05em;
+  line-height: 1.55;
+  background: var(--paper);
+  color: var(--ink);
+  border: 4px solid var(--ink);
+  border-left: 12px solid var(--accent);
+  box-shadow: 8px 8px 0 var(--shadow);
+}
+@media (max-width: 480px) {
+  .tagline { box-shadow: 4px 4px 0 var(--shadow); padding: 0.8em 0.9em; }
+}
 .feed-link { color: var(--muted); font-size: 0.9em; }
 .recent-posts h2 { font-size: 1.2em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
 
 .post-summary { margin: 1.5em 0; }
-.post-summary h2, .post-summary h3 { margin: 0 0 0.3em; }
+.post-summary h2, .post-summary h3 { margin: 0 0 0.3em; letter-spacing: -0.01em; }
+.post-summary h2 a, .post-summary h3 a { color: var(--fg); border-bottom: 3px solid var(--accent); }
+.post-summary h2 a:hover, .post-summary h3 a:hover { background: var(--accent); color: var(--ink); }
 .post-summary .summary { color: var(--muted); margin: 0.3em 0 0; }
 
 .post-header h1 {
