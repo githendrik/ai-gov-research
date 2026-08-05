@@ -12,12 +12,14 @@
 </head>
 <body>
   <header class="site-header">
-    <a href="{{ .Site.BaseURL }}" class="site-title">{{ .Site.Title }}</a>
-    <nav class="site-nav">
-      <a href="{{ .Site.BaseURL }}">Home</a>
-      <a href="{{ "posts/" | relURL }}">Posts</a>
-      <a href="{{ "index.xml" | relURL }}">RSS</a>
-    </nav>
+    <div class="site-banner">
+      <a href="{{ .Site.BaseURL }}" class="site-title">{{ .Site.Title }}</a>
+      <nav class="site-nav">
+        <a href="{{ .Site.BaseURL }}">Home</a>
+        <a href="{{ "posts/" | relURL }}">Posts</a>
+        <a href="{{ "index.xml" | relURL }}">RSS</a>
+      </nav>
+    </div>
   </header>
   <main class="site-main">
     {{ block "main" . }}{{ end }}

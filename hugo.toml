@@ -1,7 +1,6 @@
-baseURL = "https://ai-gov-research.vercel.app/"
-title = "AI Governance Weekly"
-defaultContentLanguage = "en"
-copyright = "AI Governance Weekly"
+baseURL = "https://aigov.philine.ch/"
+title = "The AI Gov Digest"
+copyright = "The AI Gov Digest"
 enableRobotsTXT = true
 enableGitInfo = true
 
