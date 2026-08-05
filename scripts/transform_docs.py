@@ -7,7 +7,9 @@ to content/posts/*.md with:
   - YAML frontmatter injected (title, date, draft=false, tags, source)
   - title promoted from the first `# ` line (and that line removed from body)
   - date parsed from the leading YYYY-MM-DD in the filename
-  - bracketed citation markers like [68] or [77][93] rewritten as <sup>68</sup> / <sup>77,93</sup>
+  - bracketed citation markers like [68] or [77][93] rewritten as <sup>68</sup> /
+    <sup>77,93</sup> — but only when the document defines that reference number in
+    a reference list; unresolvable markers are stripped
   - empty YAML fields gracefully omitted
 
 The source /docs/ directory is never modified; this script only writes to
@@ -43,9 +45,19 @@ FILENAME_DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})[-_]?")
 # Match the first H1 line in the body. Group 1 = the title text.
 H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 
-# Match a run of consecutive [NN] citation markers at the same position.
-# e.g. [68] -> ("68",), [77][93] -> ("77","93"), [10][132] -> ("10","132")
-CITATION_RUN_RE = re.compile(r"(?:\[(\d+)\]){1,}")
+# Match a run of consecutive [NN] citation markers at the same position,
+# capturing any whitespace immediately before it so a stripped marker doesn't
+# leave a dangling space before punctuation.
+# e.g. [68], [77][93], [10][132]
+CITATION_RUN_RE = re.compile(r"([ \t]*)((?:\[\d+\])+)")
+
+# A single [NN] inside a run.
+CITATION_NUM_RE = re.compile(r"\[(\d+)\]")
+
+# A reference definition line, e.g. "[77]: https://..." or "[77] Some Title — https://..."
+# Only lines starting with the marker count, so inline markers are never mistaken
+# for definitions.
+REFERENCE_DEF_RE = re.compile(r"^[ \t]*\[(\d+)\]:?[ \t]+\S", re.MULTILINE)
 
 
 def parse_date_from_filename(stem: str) -> dt.date | None:
@@ -71,17 +83,31 @@ def extract_title(body: str) -> tuple[str | None, str]:
     return title, new_body
 
 
-def rewrite_citations(body: str) -> str:
-    def _to_sup(m: re.Match) -> str:
-        nums = [g for g in m.groups() if g is not None]
-        if not nums:
-            return m.group(0)
-        joined = ",".join(nums)
-        return f"<sup>{joined}</sup>"
+def find_defined_references(body: str) -> set[str]:
+    """Numbers that actually have a reference definition line in this document."""
+    return set(REFERENCE_DEF_RE.findall(body))
 
-    # Two-pass: first collapse adjacent [N][N] blocks, then convert each to <sup>.
-    # We match a maximal run of [NN] groups and emit a single <sup>...</sup>.
-    return CITATION_RUN_RE.sub(_to_sup, body)
+
+def rewrite_citations(body: str) -> str:
+    """Render citation markers that resolve; strip the ones that don't.
+
+    Upstream digests currently emit bracketed markers without a matching
+    reference list, which renders as authoritative-looking superscripts that
+    point nowhere. Markers are only kept when this document defines them.
+    """
+    defined = find_defined_references(body)
+
+    def _sub(m: re.Match) -> str:
+        lead, run = m.group(1), m.group(2)
+        if m.start() == 0 or body[m.start() - 1] == "\n":
+            # Start of a line: this is a reference definition, not an inline marker.
+            return m.group(0)
+        nums = [n for n in CITATION_NUM_RE.findall(run) if n in defined]
+        if not nums:
+            return ""
+        return f"{lead}<sup>{','.join(nums)}</sup>"
+
+    return CITATION_RUN_RE.sub(_sub, body)
 
 
 def build_frontmatter(
