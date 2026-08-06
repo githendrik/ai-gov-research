@@ -3,18 +3,18 @@
   <header class="list-header">
     <h1>{{ .Title }}</h1>
     {{ with .Description }}<p class="list-desc">{{ . }}</p>{{ end }}
-    <p class="feed-link">Subscribe: <a href="{{ (printf "%sindex.xml" .RelPermalink) | safeURL }}">RSS</a></p>
+    <p class="feed-link">{{ T "subscribe" }}: <a href="{{ (printf "%sindex.xml" .RelPermalink) | safeURL }}">{{ T "rss" }}</a></p>
   </header>
   {{ range .Pages }}
   <article class="post-summary">
     <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
     <div class="post-meta">
-      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format $.Site.Params.dateFormat }}</time>
     </div>
     <p class="summary">{{ .Summary }}</p>
   </article>
   {{ else }}
-  <p>No posts yet — check back soon.</p>
+  <p>{{ T "no_posts" }}</p>
   {{ end }}
 </section>
 {{ end }}

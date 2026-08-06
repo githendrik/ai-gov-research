@@ -4,7 +4,7 @@ Notes for any agent (Claude, GPT, opencode, etc.) working on this repo. Read thi
 
 ## What this project is
 
-Static site for **The AI Gov Digest** — a weekly AI governance/regulation/safety digest. Hugo + custom brutalist theme, deployed on Vercel, source content kept verbatim and transformed at build time.
+Static site for **The AI Gov Digest** — a weekly AI governance/regulation/safety digest. Hugo + custom brutalist theme, deployed on Vercel, source content kept verbatim and transformed at build time. Bilingual (EN + DE): the upstream automation produces both languages in a single pass, the bridge splits and commits them, the transformer routes them to per-language content dirs, and Hugo serves them via its built-in i18n.
 
 ## The one rule
 
@@ -12,7 +12,7 @@ Static site for **The AI Gov Digest** — a weekly AI governance/regulation/safe
 
 ## Architecture in one paragraph
 
-`docs/*.md` (verbatim, committed) + `static/images/*.png` (hero images, same stem) → `scripts/transform_docs.py` runs at build time → writes `content/posts/*.md` (gitignored, generated) with YAML frontmatter (title promoted from H1, date parsed from filename, slug set to full stem to prevent collisions, `image:` injected if matching PNG exists) and bracketed citations rewritten to `<sup>` → Hugo builds `public/`. No GitHub Actions; Vercel auto-deploys on push to `main`. The upstream pipeline (homelab CT 104) pushes both `docs/*.md` and `static/images/*.png` via a deploy key.
+`docs/*.md` + `docs/*.de.md` (verbatim, committed) + `static/images/*.png` (hero images, same base stem) → `scripts/transform_docs.py` runs at build time → writes `content/en/posts/*.md` and `content/de/posts/*.de.md` (gitignored, generated) with YAML frontmatter (title promoted from H1, date parsed from filename, slug set to base stem to prevent collisions, `image:` injected if matching PNG exists) and bracketed citations rewritten to `<sup>` → Hugo builds `public/` with EN at root and DE at `/de/`. No GitHub Actions; Vercel auto-deploys on push to `main`. The upstream pipeline (homelab CT 104) pushes both `docs/*.md` + `docs/*.de.md` and `static/images/*.png` via a deploy key.
 
 ## Stack choices and why
 
@@ -25,8 +25,8 @@ Static site for **The AI Gov Digest** — a weekly AI governance/regulation/safe
 
 Content is produced by an automated research pipeline running on a Proxmox LXC container. Full reference: `Homelab/reference/gmktec-m6-local-llm-guide.md` §15 in the Obsidian vault. Summary:
 
-1. **Open WebUI Automation** (weekly Mon 07:00) — `deepseek-v4-flash` via haimaker runs ~20 agentic SearXNG search rounds, produces a cited markdown digest. The Knowledge Base "AI Governance Research" is attached to the model for RAG-based dedup (`rag.top_k = 20`).
-2. **Bridge script** (`bridge.py`, systemd timer Mon 07:30) — extracts the digest from the chat API, writes it to `docs/`, generates a hero image via haimaker `gpt-image-1-mini` (1024×1024 → cropped to 16:9 with Pillow → compressed), saves to `static/images/`, and pushes both to this repo via a deploy key. Two commits per run: markdown first (fast), image second (slow, non-blocking if it fails).
+1. **Open WebUI Automation** (weekly Mon 07:00) — `deepseek-v4-flash` via haimaker runs ~20 agentic SearXNG search rounds, produces a cited markdown digest in **English, followed by a `---DE---` delimiter and a German translation of the same digest** (identical item numbering, citations, URLs — only prose translated). The Knowledge Base "AI Governance Research" is attached to the model for RAG-based dedup (`rag.top_k = 20`).
+2. **Bridge script** (`bridge.py`, systemd timer Mon 07:30) — extracts the digest from the chat API, splits on `---DE---`, writes `docs/<stem>.md` (EN) + `docs/<stem>.de.md` (DE) to the blog repo, runs a structural parity check (item headings + citation markers EN vs DE), generates a hero image via haimaker `gpt-image-1-mini` (1024×1024 → cropped to 16:9 with Pillow → compressed), saves to `static/images/` (shared by both languages), and pushes both markdown + image via a deploy key. Two commits per run: markdown first (fast), image second (slow, non-blocking if it fails).
 3. **oikb watch** (systemd service, continuous) — syncs the digests directory into the Open WebUI Knowledge Base via incremental SHA-256 diff, so the KB grows weekly for RAG dedup.
 
 The bridge does `git pull --rebase` before pushing, so manual edits to this repo (Hugo config, theme, etc.) are safe — the bridge rebases its commits on top.
@@ -34,18 +34,18 @@ The bridge does `git pull --rebase` before pushing, so manual edits to this repo
 ## The transformer (`scripts/transform_docs.py`)
 
 What it does, in order:
-1. Globs `docs/*.md` (skips dotfiles).
-2. Parses date from leading `YYYY-MM-DD` in the filename.
+1. Globs `docs/*.md` (skips dotfiles). Detects language: files ending in `.de.md` are German, all others English.
+2. Parses date from leading `YYYY-MM-DD` in the filename (works for both `*.md` and `*.de.md`).
 3. Extracts the first `# ` line as `title` and removes that line from the body (so the theme's title doesn't duplicate it).
-4. Injects YAML frontmatter: `title`, `date`, `draft: false`, `slug: <full-stem>` (collision guard), `tags: [governance]`, `source: <stem>.md`, and `image: /images/<stem>.png` if `static/images/<stem>.png` exists.
+4. Injects YAML frontmatter: `title`, `date`, `draft: false`, `slug: <base-stem>` (full stem minus `.de` for German, to avoid collisions and share the URL namespace), `tags: [governance]`, `source: <filename>`, and `image: /images/<base-stem>.png` if `static/images/<base-stem>.png` exists (shared by both languages).
 5. Rewrites `[NN]` and adjacent runs like `[77][93]` → `<sup>77,93</sup>`.
-6. Writes to `content/posts/<same-filename>`.
+6. Writes EN to `content/en/posts/<same-filename>`, DE to `content/de/posts/<same-filename>`. Hugo's i18n picks these up via per-language `contentDir` in `hugo.toml`.
 
 Source `docs/*.md` is never modified. Re-running overwrites prior output (idempotent). Supports `--watch` via `watchdog` (falls back to polling if `watchdog` isn't installed).
 
 ## Hero images
 
-Each post can have a hero image stored as `static/images/<stem>.png` (same filename stem as the markdown, e.g. `2026-08-04-ai-governance.png` for `2026-08-04-ai-governance.md`). The transformer checks for a matching PNG and injects `image: /images/<stem>.png` into the frontmatter. If no PNG exists, no `image` field is added and the post renders without a hero — the template uses `{{ with .Params.image }}` with a plain-title fallback.
+Each post can have a hero image stored as `static/images/<base-stem>.png` (same base stem as the markdown, e.g. `2026-08-04-ai-governance.png` for `2026-08-04-ai-governance.md`). The transformer checks for a matching PNG and injects `image: /images/<base-stem>.png` into the frontmatter. Both EN and DE posts share the same hero image (same base stem). If no PNG exists, no `image` field is added and the post renders without a hero — the template uses `{{ with .Params.image }}` with a plain-title fallback.
 
 Images are generated by the upstream bridge script (haimaker `gpt-image-1-mini`, 1024×1024) and cropped to 16:9 center + compressed with Pillow before pushing. They live in `static/images/` (not `assets/images/`) because Hugo serves `static/` as-is — `assets/` is for resources that need Hugo pipeline processing.
 
@@ -93,9 +93,9 @@ hugo server --port 1313
 
 ## RSS
 
-Two feeds, both auto-generated by Hugo:
-- `/index.xml` — site-wide
-- `/posts/index.xml` — posts section only
+Two feeds per language, both auto-generated by Hugo:
+- EN: `/index.xml` (site-wide) and `/posts/index.xml` (posts section)
+- DE: `/de/index.xml` (site-wide) and `/de/posts/index.xml` (posts section)
 
 Configured in `hugo.toml` via `[outputs]` (home and section both emit `rss`) and `[services.rss] limit = 50`.
 
@@ -105,9 +105,9 @@ Configured in `hugo.toml` via `[outputs]` (home and section both emit `rss`) and
 
 ## What NOT to do
 
-- Don't edit `docs/*.md` by hand (upstream pipeline owns them).
+- Don't edit `docs/*.md` or `docs/*.de.md` by hand (upstream pipeline owns them).
 - Don't edit `static/images/*.png` by hand (upstream pipeline generates them).
-- Don't commit `content/posts/*.md` (gitignored; generated).
+- Don't commit `content/en/posts/*.md` or `content/de/posts/*.md` (gitignored; generated).
 - Don't rename `hugo.toml` to `config.toml` to "fix" the version issue — bump `HUGO_VERSION` on Vercel instead.
 - Don't remove the explicit `slug` from the transformer's frontmatter (weekly posts will collide).
 - Don't add a GitHub Actions weekly reminder workflow — the upstream pipeline pushes automatically.

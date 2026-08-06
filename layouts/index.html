@@ -6,18 +6,18 @@
     <p class="tagline">{{ with .Site.Params.tagline }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}</p>
   </header>
   <section class="recent-posts">
-    <h2>Recent posts</h2>
+    <h2>{{ T "recent_posts" }}</h2>
     {{ $posts := where .Site.RegularPages "Section" "posts" }}
     {{ range first 10 $posts }}
     <article class="post-summary">
       <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-      <div class="post-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time></div>
+      <div class="post-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format $.Site.Params.dateFormat }}</time></div>
       <p class="summary">{{ .Summary }}</p>
     </article>
     {{ else }}
-    <p>No posts yet — check back soon.</p>
+    <p>{{ T "no_posts" }}</p>
     {{ end }}
   </section>
-  <p><a href="{{ "posts/" | relURL }}">All posts &rarr;</a></p>
+  <p><a href="{{ "posts/" | relLangURL }}">{{ T "all_posts" }}</a></p>
 </section>
 {{ end }}

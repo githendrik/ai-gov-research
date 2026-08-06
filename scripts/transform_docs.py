@@ -34,7 +34,9 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC_DIR = REPO_ROOT / "docs"
-OUT_DIR = REPO_ROOT / "content" / "posts"
+CONTENT_DIR = REPO_ROOT / "content"
+OUT_DIR_EN = CONTENT_DIR / "en" / "posts"
+OUT_DIR_DE = CONTENT_DIR / "de" / "posts"
 IMAGES_DIR = REPO_ROOT / "static" / "images"
 
 # --- Patterns ---------------------------------------------------------------
@@ -113,7 +115,9 @@ def rewrite_citations(body: str) -> str:
 def build_frontmatter(
     title: str | None,
     date: dt.date | None,
-    stem: str,
+    slug: str,
+    source_name: str,
+    image_stem: str,
     extra_tags: list[str] | None = None,
 ) -> str:
     lines = ["---"]
@@ -123,15 +127,15 @@ def build_frontmatter(
     if date:
         lines.append(f"date: {date.isoformat()}")
     lines.append("draft: false")
-    lines.append(f"slug: {stem}")
+    lines.append(f"slug: {slug}")
     tags = ["governance"] + (extra_tags or [])
     if tags:
         lines.append("tags: [{}]".format(", ".join(tags)))
-    lines.append(f"source: {stem}.md")
-    # Hero image: check for matching PNG in assets/images/
-    image_path = IMAGES_DIR / f"{stem}.png"
+    lines.append(f"source: {source_name}")
+    # Hero image: check for matching PNG in static/images/
+    image_path = IMAGES_DIR / f"{image_stem}.png"
     if image_path.exists():
-        lines.append(f"image: /images/{stem}.png")
+        lines.append(f"image: /images/{image_stem}.png")
     lines.append("---")
     lines.append("")
     return "\n".join(lines)
@@ -139,11 +143,19 @@ def build_frontmatter(
 
 def transform_file(src: Path, out_dir: Path) -> str:
     stem = src.stem
+    is_de = stem.endswith(".de")
+    base_stem = stem[:-3] if is_de else stem
     date = parse_date_from_filename(stem)
     raw = src.read_text(encoding="utf-8")
     title, body = extract_title(raw)
     body = rewrite_citations(body)
-    fm = build_frontmatter(title or stem, date, stem)
+    if is_de:
+        slug = base_stem
+        image_stem = base_stem
+    else:
+        slug = stem
+        image_stem = stem
+    fm = build_frontmatter(title or base_stem, date, slug, src.name, image_stem)
     transformed = fm + body
     if not transformed.endswith("\n"):
         transformed += "\n"
@@ -161,9 +173,12 @@ def run_once() -> int:
     for src in sorted(SRC_DIR.glob("*.md")):
         if src.name.startswith("."):
             continue
-        name = transform_file(src, OUT_DIR)
+        is_de = src.stem.endswith(".de")
+        out_dir = OUT_DIR_DE if is_de else OUT_DIR_EN
+        name = transform_file(src, out_dir)
         out_files.append(name)
-        print(f"  transformed: {src.name} -> content/posts/{name}")
+        lang = "DE" if is_de else "EN"
+        print(f"  transformed [{lang}]: {src.name} -> {out_dir.relative_to(REPO_ROOT)}/{name}")
     if not out_files:
         print("warning: no markdown files found in docs/", file=sys.stderr)
     return 0

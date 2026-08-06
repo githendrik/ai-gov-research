@@ -7,7 +7,7 @@
       <div class="post-hero-overlay">
         <h1 class="post-title">{{ $.Title }}</h1>
         <div class="post-meta">
-          <time datetime="{{ $.Date.Format "2006-01-02" }}">{{ $.Date.Format "January 2, 2006" }}</time>
+          <time datetime="{{ $.Date.Format "2006-01-02" }}">{{ $.Date.Format $.Site.Params.dateFormat }}</time>
           {{ with $.Params.tags }}<span class="post-tags">{{ range . }}<span class="tag">{{ . }}</span>{{ end }}</span>{{ end }}
         </div>
       </div>
@@ -15,7 +15,7 @@
     {{ else }}
     <h1 class="post-title">{{ .Title }}</h1>
     <div class="post-meta">
-      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format $.Site.Params.dateFormat }}</time>
       {{ with .Params.tags }}<span class="post-tags">{{ range . }}<span class="tag">{{ . }}</span>{{ end }}</span>{{ end }}
     </div>
     {{ end }}
@@ -24,7 +24,7 @@
     {{ .Content }}
   </div>
   <footer class="post-footer">
-    {{ with .Site.BaseURL }}<p><a href="{{ . }}">Back to all posts</a></p>{{ end }}
+    {{ with .Site.BaseURL }}<p><a href="{{ "" | relLangURL }}">{{ T "back_to_all" }}</a></p>{{ end }}
   </footer>
 </article>
 {{ end }}

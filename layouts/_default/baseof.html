@@ -9,17 +9,36 @@
   <link rel="stylesheet" href="{{ $css.RelPermalink }}">
   <link rel="icon" href="{{ "favicon.ico" | relURL }}">
   <link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} feed" href="{{ .Site.BaseURL }}index.xml">
+  <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} feed" href="{{ "index.xml" | relLangURL }}">
   {{ block "head" . }}{{ end }}
 </head>
 <body>
   <header class="site-header">
     <div class="site-banner">
-      <a href="{{ .Site.BaseURL }}" class="site-title">{{ .Site.Title }}</a>
+      <a href="{{ "" | relLangURL }}" class="site-title">{{ .Site.Title }}</a>
       <nav class="site-nav">
-        <a href="{{ .Site.BaseURL }}">Home</a>
-        <a href="{{ "posts/" | relURL }}">Posts</a>
-        <a href="{{ "index.xml" | relURL }}">RSS</a>
+        <a href="{{ "" | relLangURL }}">{{ T "home" }}</a>
+        <a href="{{ "posts/" | relLangURL }}">{{ T "posts" }}</a>
+        <a href="{{ "index.xml" | relLangURL }}">{{ T "rss" }}</a>
+        {{ range .Site.Languages }}
+          {{ if ne .Lang $.Site.Language.Lang }}
+            {{ $langCode := .Lang }}
+            {{ $target := "" }}
+            {{ range $.Translations }}
+              {{ if eq .Language.Lang $langCode }}
+                {{ $target = .RelPermalink }}
+              {{ end }}
+            {{ end }}
+            {{ if not $target }}
+              {{ if eq $langCode $.Site.DefaultContentLanguage }}
+                {{ $target = "/" }}
+              {{ else }}
+                {{ $target = printf "/%s/" $langCode }}
+              {{ end }}
+            {{ end }}
+            <a href="{{ $target }}" class="lang-switch">{{ $langCode | upper }}</a>
+          {{ end }}
+        {{ end }}
       </nav>
     </div>
   </header>
@@ -27,7 +46,7 @@
     {{ block "main" . }}{{ end }}
   </main>
   <footer class="site-footer">
-    <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }} · <a href="{{ "index.xml" | relURL }}">RSS feed</a></p>
+    <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }} · <a href="{{ "index.xml" | relLangURL }}">{{ T "rss" }}</a></p>
   </footer>
 </body>
 </html>

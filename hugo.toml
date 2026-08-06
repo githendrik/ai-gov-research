@@ -3,14 +3,31 @@ title = "The AI Gov Digest"
 copyright = "The AI Gov Digest"
 enableRobotsTXT = true
 enableGitInfo = true
+defaultContentLanguage = "en"
 
 # Promote date from filename: 2026-08-04-foo.md -> date=2026-08-04
 [frontmatter]
-date = [":filename", ":default"]
+  date = [":filename", ":default"]
+
+[languages]
+  [languages.en]
+    locale = "en-US"
+    contentDir = "content/en"
+    weight = 1
+    [languages.en.params]
+      description = "A weekly digest of AI governance, regulation, and safety news."
+      tagline = "Every week, the rules being written for artificial intelligence — what regulators shipped, what lawmakers argued over, and what actually changed. Researched, cited, and stripped of hype."
+      dateFormat = "January 2, 2006"
+  [languages.de]
+    locale = "de-DE"
+    contentDir = "content/de"
+    weight = 2
+    [languages.de.params]
+      description = "Ein wöchentlicher Digest zu KI-Governance, -Regulierung und -Sicherheit."
+      tagline = "Jede Woche die Regeln, die für Künstliche Intelligenz geschrieben werden — was Regulierer veröffentlichten, worüber Gesetzgeber stritten, und was sich tatsächlich veränderte. Recherchiert, belegt, ohne Hype."
+      dateFormat = "02.01.2006"
 
 [params]
-  description = "A weekly digest of AI governance, regulation, and safety news."
-  tagline = "Every week, the rules being written for artificial intelligence — what regulators shipped, what lawmakers argued over, and what actually changed. Researched, cited, and stripped of hype."
   mainSections = ["posts"]
   [params.author]
     name = "AI Gov Research"
