@@ -31,6 +31,10 @@ defaultContentLanguage = "en"
   mainSections = ["posts"]
   [params.author]
     name = "AI Gov Research"
+  [params.plausible]
+    enabled = true
+    domain = "aigov.philine.ch"
+    src = "https://analytics.app.richert.li/js/script.js"
   [params.newsletter]
     enabled = true
     [params.newsletter.en]

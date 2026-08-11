@@ -1,6 +1,8 @@
 # German translation quality
 
-Status: **pending — not yet applied.** Written 2026-08-11.
+Status: **applied 2026-08-11** to the Open WebUI automation prompt on CT 104
+(automation "AI Governance Weekly Research", `id 134937c8`). First digest that
+should reflect it: the run on **Mon 2026-08-17 07:00**.
 
 The DE half of each digest is produced in the same generation pass as the EN half
 (single prompt, split on `---DE---` by `bridge.py` on homelab CT 104). There is no
@@ -27,17 +29,17 @@ against their EN sources found four recurring problems:
 Audience and sources are Swiss (`aigov.philine.ch`, `.ch` sources, SearXNG on
 `de-CH`), so Swiss orthography is the target.
 
-## Task 1 — add the glossary to the Open WebUI prompt (option A)
+## Task 1 — add the glossary to the Open WebUI prompt (option A) — DONE 2026-08-11
 
-Requires SSH to CT 104 / the Open WebUI admin UI.
+Applied by appending the block below to `data.prompt` of the automation row in
+`/opt/open-webui-data/webui.db` on CT 104, after the existing `## Bilingual output`
+section. The structural instructions (identical item numbering, verbatim citations,
+URLs and `**Source:**`/`**Category:**` lines) were left untouched, since the bridge's
+EN/DE parity check depends on them.
 
-1. Open the model's system prompt for the "AI Governance Research" automation.
-2. Append the block below to the section that instructs the model to emit the DE
-   half after `---DE---`. Do not replace the existing structural instructions
-   (identical item numbering, citations and URLs must stay untouched — the bridge's
-   parity check depends on it).
-3. Trigger one manual run, diff the resulting `docs/*.de.md` against the rules, and
-   note the result in a `daily-log/` entry.
+Rollback: `/opt/open-webui-data/automation-prompt.bak-20260811.json` holds the
+pre-change `data` blob; `/opt/open-webui-data/webui.db.bak-glossary-20260811` is a
+full DB backup.
 
 ```
 GERMAN STYLE RULES
@@ -87,6 +89,67 @@ Use one rendering per term throughout a digest. Do not alternate between
 e.g. "Evaluierung vor Markteintritt" and "Pre-Market-Evaluation", or
 between "Evaluierungskapazität" and "Evaluierungskompetenz".
 ```
+
+## Why the glossary lives in the prompt, not in a Note or Knowledge Base
+
+Investigated 2026-08-11 against the installed Open WebUI (`utils/automations.py`,
+`utils/middleware.py`, `utils/tools.py`), because a GUI-editable table would be nicer
+than editing a prompt blob.
+
+- **Notes cannot be attached to an automation.** The automation builds its
+  `/api/chat/completions` payload by hand (`_run_automation`) with `model`,
+  `messages`, `tool_ids`, `features`, `filter_ids`, `terminal_id` — there is no
+  `files` key, so the "Attach Notes" path used in normal chats does not exist here.
+- **`prompt_template()` supports only user/date variables** (`{{USER_NAME}}`,
+  `{{CURRENT_DATE}}`, …). There is no note or KB interpolation.
+- **Model-level knowledge is only force-injected in legacy mode.**
+  `middleware.py` injects `model.info.meta.knowledge` into `files` only when
+  `params.function_calling == 'legacy'`. Under native function calling — the default,
+  and what this automation uses — attached knowledge and notes are exposed as *tools*
+  (`view_note`, `query_knowledge_files`, …) that the model may or may not call. The
+  docs' claim that Full Context (`item.context == 'full'`) is "always injected
+  regardless of native function calling" does not match this code path for
+  model-attached knowledge.
+- Switching the model to `legacy` to force injection would break the digest itself:
+  the research phase depends on ~20 rounds of agentic web search, which needs native
+  tool calling.
+
+So a Note/KB glossary would be *advisory* — read only if the model chooses to. For a
+must-follow rule that is the wrong mechanism. The prompt is the only place in this
+version that guarantees the glossary is in context on every run.
+
+If GUI editing becomes important, the workable shape is: keep the glossary in a Note
+(nice table, edit any time), and add a small sync step that reads it via
+`GET /api/v1/notes/{id}` and rewrites the glossary section of the automation's
+`data.prompt` before the weekly run. The note stays the source of truth and the
+prompt stays the delivery mechanism.
+
+## Related: the dedup knowledge base was not working (fixed 2026-08-11)
+
+Investigating whether a Note could feed the prompt turned up a live defect in the
+dedup path described in `AGENTS.md`.
+
+`model.meta.knowledge` for `ai-gov-research` held a bare ID string
+(`["2d9cf10f-…"]`) rather than the knowledge object the frontend writes.
+`utils/tools.py::get_attached_knowledge()` skips non-dict entries
+(`if not isinstance(item, dict): continue`), so the `<attached_knowledge>` system
+message was never emitted and the KB was invisible to the model — not merely
+optional. (The legacy-mode path at `middleware.py:2479` calls `item.get(...)` on the
+same entry and would raise `AttributeError`; it never ran because the model uses
+native function calling.) Separately, nothing in the automation prompt ever told the
+model to consult the KB.
+
+Both fixed: the attachment was rewritten as the full knowledge dict plus
+`type: "collection"`, and a dedup step was added to the prompt's research process
+instructing the model to call `query_knowledge_files` / `grep_knowledge_files` for
+each candidate item before writing. Verified by calling `get_attached_knowledge()`
+against the stored meta: 0 advertised items before, 1 after.
+
+This remains an *instruction*, not a guarantee — under native function calling the
+model still chooses whether to call the tools. The deterministic alternative, if
+duplicates keep appearing, is to have `bridge.py` extract recent item headings from
+`docs/*.md` and rewrite an "Already covered" section of `data.prompt` before each
+run, putting the titles in context with no tool call required.
 
 ## Task 2 — document the DE pipeline upstream
 

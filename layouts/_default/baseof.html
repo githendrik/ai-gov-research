@@ -10,6 +10,11 @@
   <link rel="icon" href="{{ "favicon.ico" | relURL }}">
   <link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
   <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} feed" href="{{ "index.xml" | relLangURL }}">
+  {{ with .Site.Params.plausible }}
+    {{ if and .enabled hugo.IsProduction }}
+      <script defer data-domain="{{ .domain }}" src="{{ .src }}"></script>
+    {{ end }}
+  {{ end }}
   {{ block "head" . }}{{ end }}
 </head>
 <body>
