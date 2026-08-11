@@ -12,6 +12,7 @@
   --paper: #fdfdfd;
   --ink: #1a1a1a;
   --shadow: #1a1a1a;
+  --mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -127,11 +128,95 @@ sup { font-size: 0.75em; color: var(--muted); line-height: 0; }
 .feed-link { color: var(--muted); font-size: 0.9em; }
 .recent-posts h2 { font-size: 1.2em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
 
-.post-summary { margin: 1.5em 0; }
+.post-summary { margin: 0; padding: 2em 0; border-bottom: 4px solid var(--ink); }
+.post-summary:first-of-type { padding-top: 1em; }
+.post-summary:last-of-type { border-bottom: 0; }
 .post-summary h2, .post-summary h3 { margin: 0 0 0.3em; letter-spacing: -0.01em; }
+
+.section-label {
+  font-family: var(--mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75em;
+  font-weight: 700;
+  background: var(--ink);
+  color: var(--accent);
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  margin: 2.5em 0 0.8em;
+}
+.featured-issue h2 { font-size: clamp(1.3em, 4vw, 1.9em); font-weight: 900; }
+.featured-issue .summary { color: var(--fg); }
+.read-more a { font-weight: 700; }
+.cta { margin: 2.5em 0; }
+.cta a {
+  display: block;
+  background: var(--accent);
+  color: var(--ink);
+  border: 4px solid var(--ink);
+  border-bottom: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--shadow);
+  padding: 0.75em 1em;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85em;
+  font-weight: 700;
+  text-align: center;
+}
+.cta a:hover {
+  background: var(--ink);
+  color: var(--accent);
+  box-shadow: 4px 4px 0 var(--shadow);
+  transform: translate(4px, 4px);
+}
+.year-heading {
+  font-size: 1em;
+  font-family: var(--mono, monospace);
+  letter-spacing: 0.12em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 0.2em;
+  margin: 2.5em 0 0;
+}
+.issue-lines { list-style: none; padding: 0; margin: 0 0 1em; }
+.issue-lines li {
+  display: flex;
+  gap: 1em;
+  align-items: baseline;
+  padding: 0.6em 0;
+  border-bottom: 1px solid var(--border);
+}
+.issue-lines time {
+  font-family: var(--mono, monospace);
+  font-size: 0.8em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .issue-lines li { flex-direction: column; gap: 0.15em; }
+  .cta a { box-shadow: 4px 4px 0 var(--shadow); }
+}
 .post-summary h2 a, .post-summary h3 a { color: var(--fg); border-bottom: 3px solid var(--accent); }
 .post-summary h2 a:hover, .post-summary h3 a:hover { background: var(--accent); color: var(--ink); }
 .post-summary .summary { color: var(--muted); margin: 0.3em 0 0; }
+.summary-hero {
+  display: block;
+  border: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--shadow);
+  margin-bottom: 1em;
+  overflow: hidden;
+  border-bottom: 4px solid var(--ink);
+}
+.summary-hero img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 480px) {
+  .summary-hero { box-shadow: 4px 4px 0 var(--shadow); }
+  .summary-hero img { height: 140px; }
+}
 
 .post-header h1 {
   margin: 0 0 0.3em;

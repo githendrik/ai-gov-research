@@ -8,3 +8,8 @@ all_posts: "Alle Beiträge →"
 no_posts: Noch keine Beiträge — bald wieder hier.
 newsletter_title: "Den wöchentlichen Digest ins Postfach"
 newsletter_note: "Eine E-Mail pro Woche. Kein Spam. Jederzeit abbestellbar."
+latest_issue: Aktuelle Ausgabe
+read_issue: "Ausgabe lesen →"
+previous_issues: Frühere Ausgaben
+archive_desc: "Alle Ausgaben, neueste zuerst."
+subscribe_cta: "Jede Ausgabe per E-Mail →"

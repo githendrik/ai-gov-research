@@ -48,7 +48,7 @@
   <footer class="site-footer">
     {{ with .Site.Params.newsletter }}
       {{ if .enabled }}
-        <div class="newsletter-box">
+        <div class="newsletter-box" id="newsletter">
           {{ partial "newsletter.html" $ }}
         </div>
       {{ end }}

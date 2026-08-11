@@ -2,17 +2,24 @@
 <section class="post-list">
   <header class="list-header">
     <h1>{{ .Title }}</h1>
-    {{ with .Description }}<p class="list-desc">{{ . }}</p>{{ end }}
+    <p class="list-desc">{{ with .Description }}{{ . }}{{ else }}{{ T "archive_desc" }}{{ end }}</p>
     <p class="feed-link">{{ T "subscribe" }}: <a href="{{ (printf "%sindex.xml" .RelPermalink) | safeURL }}">{{ T "rss" }}</a></p>
   </header>
+  {{ range .Pages.GroupByDate "2006" }}
+  <h2 class="year-heading">{{ .Key }}</h2>
   {{ range .Pages }}
+  {{ $p := . }}
   <article class="post-summary">
-    <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    {{ with .Params.image }}
+    <a class="summary-hero" href="{{ $p.RelPermalink }}"><img src="{{ . | relURL }}" alt="{{ $p.Title }}" loading="lazy"></a>
+    {{ end }}
+    <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
     <div class="post-meta">
       <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format $.Site.Params.dateFormat }}</time>
     </div>
     <p class="summary">{{ .Summary }}</p>
   </article>
+  {{ end }}
   {{ else }}
   <p>{{ T "no_posts" }}</p>
   {{ end }}
