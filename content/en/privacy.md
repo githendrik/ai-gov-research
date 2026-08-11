@@ -8,7 +8,7 @@ This site collects as little as possible. No advertising, no third-party tracker
 
 ## Who is responsible
 
-The AI Gov Digest is operated by the site owner. For any privacy question, or to exercise your rights, write to [digest@aigov.philine.ch](mailto:digest@aigov.philine.ch).
+The AI Gov Digest is operated by the site owner. For any privacy question, or to exercise your rights, write to [aigov@richert.li](mailto:aigov@richert.li).
 
 ## Analytics
 
@@ -57,7 +57,7 @@ The site is a static site hosted by **Vercel Inc.** As with any web host, Vercel
 
 Under the GDPR and the Swiss FADP you may request access to your data, correction, erasure, restriction of processing, or portability, and you may object to processing based on legitimate interest. In practice the only data tied to an identifiable person is a newsletter subscription — analytics data is aggregate and cannot be traced back to an individual, so it cannot be individually retrieved or deleted.
 
-To exercise any of these rights, email [digest@aigov.philine.ch](mailto:digest@aigov.philine.ch). You also have the right to lodge a complaint with a supervisory authority — in Switzerland, the Federal Data Protection and Information Commissioner (FDPIC); in the EU, your national data protection authority.
+To exercise any of these rights, email [aigov@richert.li](mailto:aigov@richert.li). You also have the right to lodge a complaint with a supervisory authority — in Switzerland, the Federal Data Protection and Information Commissioner (FDPIC); in the EU, your national data protection authority.
 
 ## Changes
 

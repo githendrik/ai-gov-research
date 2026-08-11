@@ -8,7 +8,7 @@ Diese Seite erhebt so wenig wie möglich. Keine Werbung, keine Tracker Dritter, 
 
 ## Verantwortlich
 
-The AI Gov Digest wird von der Betreiberin bzw. dem Betreiber der Seite herausgegeben. Für Fragen zum Datenschutz oder zur Ausübung Ihrer Rechte: [digest@aigov.philine.ch](mailto:digest@aigov.philine.ch).
+The AI Gov Digest wird von der Betreiberin bzw. dem Betreiber der Seite herausgegeben. Für Fragen zum Datenschutz oder zur Ausübung Ihrer Rechte: [aigov@richert.li](mailto:aigov@richert.li).
 
 ## Analyse
 
@@ -57,7 +57,7 @@ Die Seite ist statisch und wird von **Vercel Inc.** gehostet. Wie bei jedem Webh
 
 Nach DSGVO und Schweizer DSG können Sie Auskunft, Berichtigung, Löschung, Einschränkung der Bearbeitung oder Datenübertragbarkeit verlangen sowie einer Bearbeitung auf Grundlage berechtigter Interessen widersprechen. Praktisch sind die einzigen einer identifizierbaren Person zuordenbaren Daten die einer Newsletter-Anmeldung — Analysedaten sind aggregiert und nicht auf eine Person rückführbar, weshalb sie weder einzeln herausgegeben noch einzeln gelöscht werden können.
 
-Zur Ausübung dieser Rechte genügt eine E-Mail an [digest@aigov.philine.ch](mailto:digest@aigov.philine.ch). Ihnen steht zudem ein Beschwerderecht bei einer Aufsichtsbehörde zu — in der Schweiz beim Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB), in der EU bei Ihrer nationalen Datenschutzbehörde.
+Zur Ausübung dieser Rechte genügt eine E-Mail an [aigov@richert.li](mailto:aigov@richert.li). Ihnen steht zudem ein Beschwerderecht bei einer Aufsichtsbehörde zu — in der Schweiz beim Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB), in der EU bei Ihrer nationalen Datenschutzbehörde.
 
 ## Änderungen
 
