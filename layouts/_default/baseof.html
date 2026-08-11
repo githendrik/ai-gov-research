@@ -46,6 +46,13 @@
     {{ block "main" . }}{{ end }}
   </main>
   <footer class="site-footer">
+    {{ with .Site.Params.newsletter }}
+      {{ if .enabled }}
+        <div class="newsletter-box">
+          {{ partial "newsletter.html" $ }}
+        </div>
+      {{ end }}
+    {{ end }}
     <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }} · <a href="{{ "index.xml" | relLangURL }}">{{ T "rss" }}</a></p>
   </footer>
 </body>

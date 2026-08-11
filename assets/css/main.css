@@ -210,3 +210,35 @@ sup { font-size: 0.75em; color: var(--muted); line-height: 0; }
 .post-footer { margin-top: 3em; color: var(--muted); font-size: 0.9em; }
 
 code, pre { font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace; }
+
+/* ---- Newsletter signup (Brevo JS-iframe embed) ---- */
+.newsletter-box {
+  border: 4px solid var(--ink);
+  background: var(--paper);
+  box-shadow: inset 12px 0 0 var(--accent), 8px 8px 0 var(--shadow);
+  padding: 1.2em 1.4em 1.2em 2em;
+  margin-bottom: 1.5em;
+}
+.newsletter-label {
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin-bottom: 0.3em;
+  font-weight: 700;
+}
+.newsletter-note {
+  font-size: 0.85em;
+  color: var(--muted);
+  margin-bottom: 0.8em;
+}
+.newsletter-form { min-height: 60px; }
+.newsletter-error {
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+  color: var(--muted);
+}
+@media (max-width: 480px) {
+  .newsletter-box { box-shadow: inset 12px 0 0 var(--accent), 4px 4px 0 var(--shadow); padding: 0.8em 0.9em 0.8em 1.6em; }
+}

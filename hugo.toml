@@ -31,6 +31,12 @@ defaultContentLanguage = "en"
   mainSections = ["posts"]
   [params.author]
     name = "AI Gov Research"
+  [params.newsletter]
+    enabled = true
+    [params.newsletter.en]
+      form_url = "https://8d08e528.sibforms.com/v2/serve/MUIFABuKH28uH-FplDAuUp3i4rfuUPgPagzZH8x6Hf-7PBcPQE5_yDm5yjsDbacJpki5SfAc3qVYOD19l-WDd7IWFniXlEHqazWRxBJ-bd0C2SQOx45BbWecEwzifcyzDgaKhIJQ00p8WCeXvzzq5qsr66_aNtF_TaV2iAUyW1nuiQqgZEWfOc5A75uw01csvQcNw9t3fa_wCKAj1Q=="
+    [params.newsletter.de]
+      form_url = "https://8d08e528.sibforms.com/v2/serve/MUIFALWjWfcQ3-mK03N1rrSU1d0z163SF1YDgc-VHNpog4jYCtAanFxoNfTvkJ9-AXcQ-0OOAcQRKsnsGXuNqgGW_JQDe-akRp7t6X4fKuQRJt0r67jK9C1G4xl5AapUp1pHT4lh4ugAvtWCG74WXSNZzXsYo52-mKxajBhNnvCQO1b2gzz5EzWwXFnd8yjA3FYhRPmUdOcaIiw5pA=="
 
 [markup]
   [markup.goldmark]
