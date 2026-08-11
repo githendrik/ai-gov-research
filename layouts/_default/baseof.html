@@ -58,7 +58,7 @@
         </div>
       {{ end }}
     {{ end }}
-    <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }} · <a href="{{ "index.xml" | relLangURL }}">{{ T "rss" }}</a></p>
+    <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }} · <a href="{{ "index.xml" | relLangURL }}">{{ T "rss" }}</a> · <a href="{{ "privacy/" | relLangURL }}">{{ T "privacy" }}</a></p>
   </footer>
 </body>
 </html>
