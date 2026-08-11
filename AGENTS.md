@@ -105,15 +105,16 @@ Configured in `hugo.toml` via `[outputs]` (home and section both emit `rss`) and
 
 ## Newsletter
 
-ESP: **Brevo**, Free plan. 300 emails/day cap, unlimited contacts. Full plan: `NEWSLETTER_PLAN.md`.
+ESP: **Brevo**, Free plan. 300 emails/day cap, unlimited contacts. Full reference: `architecture/newsletter.md`.
 
 - **Sender:** `digest@aigov.philine.ch` (Brevo sender id 2). Domain verified via `brevo-code` TXT on `aigov.philine.ch`. DKIM via CNAME delegation to `brevo1._domainkey` / `brevo2._domainkey` → `b1.aigov-philine-ch.dkim.brevo.com` / `b2...`. SPF TXT (`v=spf1 include:spf.brevo.com ~all`) still pending — add to DNS for full deliverability.
+- **Footer signup form:** Brevo JS-iframe embed, form URLs live in `[params.newsletter]` in `hugo.toml`; inner form styled in Brevo's builder. Double opt-in handled by Brevo.
 - **Sending** is triggered by the bridge on CT 104 via `POST /v3/emailCampaigns` + `POST /v3/emailCampaigns/{id}/sendNow` — **not** RSS, **not** GitHub Actions. The endpoint is `/sendNow`, not `/send` (Brevo returns 404 on `/send`).
 - **Email HTML builder:** `scripts/build_email.py` — reads a rendered Hugo post from `public/posts/<slug>/index.html`, extracts `.post-content`, wraps it in a brutalist email template with inline CSS (table-based, `border-collapse:collapse`, 4px black borders, orange `#ff4500` title block, monospace labels). No hero image — email clients (Gmail, Apple Mail) block remote images or render them as broken icons. Run after `hugo` builds: `python3 scripts/build_email.py posts/<slug>/`.
-- **API key** lives in the bridge's systemd env (`BREVO_KEY`), never in this repo. Key is **scoped** to campaigns endpoints; Brevo IP whitelist is **not** enabled (home ISP IP is dynamic).
-- **Footer signup form:** planned (see `NEWSLETTER_PLAN.md` §3) — Brevo JS-iframe embed, form IDs will live in `[params.newsletter]` in `hugo.toml`. Not yet implemented.
+- **API key** lives in the bridge's systemd env (`BREVO_KEY` in `/opt/ai-gov-research/.brevo_env` on CT 104), never in this repo. Key is **scoped** to campaigns endpoints; Brevo IP whitelist is **not** enabled (home ISP IP is dynamic).
+- **Footer signup form:** Brevo JS-iframe embed, form URLs live in `[params.newsletter]` in `hugo.toml`; inner form styled in Brevo's builder.
 - **DMARC gotcha:** `richert.li` has a DMARC policy that blocks Brevo from sending as `brevo@richert.li`. Use `digest@aigov.philine.ch` only. The `aigov.philine.ch` subdomain was on a Vercel CNAME — switched to A record (`76.76.21.21`) to allow TXT records to coexist (CNAME + TXT on the same name is RFC-illegal).
-- If a fixed egress IP becomes required: relay through the Oracle VPS (fixed IP). See `NEWSLETTER_PLAN.md` §5.
+- If a fixed egress IP becomes required: relay through the Oracle VPS (fixed IP). See `architecture/newsletter.md`.
 - Don't hand-roll a plain HTML POST form for the footer (would expose the API key on a static site).
 - Don't remove the `enabled` gate in `hugo.toml` (used to toggle without code removal).
 - Don't include hero images in email HTML — email clients block them.
