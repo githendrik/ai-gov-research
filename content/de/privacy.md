@@ -1,6 +1,6 @@
 ---
 title: "Datenschutz"
-layout: page
+layout: plain
 draft: false
 ---
 

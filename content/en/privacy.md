@@ -1,6 +1,6 @@
 ---
 title: "Privacy"
-layout: page
+layout: plain
 draft: false
 ---
 
